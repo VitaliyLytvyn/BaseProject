@@ -41,9 +41,9 @@ class HomeFragment : BaseFragment() {
             //notify(R.string.my)
             //notifyWithAction(R.string.my, R.string.my){}
 
-            e("CRASH!!!")
-            Crashlytics.log(Log.DEBUG, "tag", "message 3 THIS!!")
-            Crashlytics.logException(Exception("my Exception 3 THIS!!"))
+//            e("CRASH!!!")
+//            Crashlytics.log(Log.DEBUG, "tag", "message 3 THIS!!")
+//            Crashlytics.logException(Exception("my Exception 3 THIS!!"))
 
             //Crashlytics.log("message")
             //Crashlytics.getInstance().crash() // Force a crash

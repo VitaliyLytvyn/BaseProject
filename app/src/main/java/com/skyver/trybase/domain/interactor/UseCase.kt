@@ -3,6 +3,7 @@ package com.skyver.trybase.domain.interactor
 
 import com.skyver.trybase.presentation.extention.Failure
 import kotlinx.coroutines.*
+import timber.log.Timber.e
 
 /**
  * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
@@ -37,12 +38,12 @@ abstract class UseCase<out Type, in Params> where Type : Any {
 
 
         modelCoroutineScope.launch(Dispatchers.Default) {
-            var res: Either<Failure, Type>
-            try {
-                res = run(params)
-            } catch (e: Throwable) {
-                res = Either.Left(Failure.OtherError())
-                e.printStackTrace() ///todo need to be logged
+            val res: Either<Failure, Type>
+            res = try {
+                run(params)
+            } catch (t: Throwable) {
+                e(t)
+                Either.Left(Failure.OtherError())
             }
 
             modelCoroutineScope.launch(Dispatchers.Main) { onResult(res) }

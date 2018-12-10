@@ -15,7 +15,7 @@ class GetRepoes
 
     //todo test for error throw and delete!!!!
 //    override suspend fun run(params: None): Either<Failure, List<Repo>> {
-//        if(true) throw Exception("My test exception!!!!!!!!!")
+//        if(true) throw Exception("My test exception TWO!")
 //        return reposRepository.repoes()
 //    }
 
