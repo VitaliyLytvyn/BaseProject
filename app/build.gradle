@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.skyver.trybase"
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    //platform
+    implementation 'androidx.appcompat:appcompat:' + rootProject.supportVersion
+    implementation 'androidx.recyclerview:recyclerview:' + rootProject.supportVersion
+    implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.constraintLayoutVersion
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+
+    // Navigation
+    implementation 'android.arch.navigation:navigation-fragment-ktx:' + rootProject.navigationVersion
+    implementation 'android.arch.navigation:navigation-ui-ktx:' + rootProject.navigationVersion
+
+    //Timber logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    
+    // Crashlytics  dependency
+    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
+
+    //dagger
+    implementation 'com.google.dagger:dagger:2.19'
+    kapt 'com.google.dagger:dagger-compiler:2.19'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+
+    //room
+    kapt "android.arch.persistence.room:compiler:1.1.1"
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+
+    //retrofit + okhttp
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+
+
+
+}
+
+apply plugin: 'com.google.gms.google-services'

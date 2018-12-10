@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">TryMakeBaseProject</string>
+
+
+    <string name="home">Home</string>
+    <string name="fragment2">fragment2</string>
+    <string name="shopping_cart">shopping_cart</string>
+
+    <!--todo delete-->
+    <string name="my">my notify!!!!____)))))))))</string>
+
+
+    <!--Errors-->
+    <string name="failure_network_connection">failure_network_connection</string>
+    <string name="failure_server_error">server error</string>
+    <string name="failure_unknown_error">unknown error</string>
+
+    <string name="action_refresh">action_refresh</string>
+</resources>

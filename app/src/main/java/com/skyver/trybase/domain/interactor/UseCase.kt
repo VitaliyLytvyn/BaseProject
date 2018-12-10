@@ -1,0 +1,55 @@
+package com.skyver.trybase.domain.interactor
+
+
+import com.skyver.trybase.presentation.extention.Failure
+import kotlinx.coroutines.*
+
+/**
+ * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
+ * This abstraction represents an execution unit for different use cases (this means than any use
+ * case in the application should implement this contract).
+ *
+ * By convention each [UseCase] implementation will execute its job in a background thread
+ * (kotlin coroutine) and will post the result in the UI thread.
+ */
+abstract class UseCase<out Type, in Params> where Type : Any {
+
+    abstract suspend fun run(params: Params): Either<Failure, Type>
+
+    operator fun invoke(
+        modelCoroutineScope: CoroutineScope,
+        params: Params,
+        onResult: (Either<Failure, Type>) -> Unit = {}
+    ) {
+
+//        val job = modelCoroutineScope.async(Dispatchers.Default) { run(params) }
+//        modelCoroutineScope.launch(Dispatchers.Main) {
+//
+//            //delay(4000)//todo for test purposes
+//
+//            try {
+//                onResult(job.await())
+//            } catch (e: Throwable) {
+//                onResult(Either.Left(Failure.OtherError()))
+//                    .also { e.printStackTrace() }///todo need to be logged
+//            }
+//        }
+
+
+        modelCoroutineScope.launch(Dispatchers.Default) {
+            var res: Either<Failure, Type>
+            try {
+                res = run(params)
+            } catch (e: Throwable) {
+                res = Either.Left(Failure.OtherError())
+                e.printStackTrace() ///todo need to be logged
+            }
+
+            modelCoroutineScope.launch(Dispatchers.Main) { onResult(res) }
+        }
+
+
+    }
+
+    class None
+}
