@@ -37,16 +37,44 @@ abstract class UseCase<out Type, in Params> where Type : Any {
 //        }
 
 
-        modelCoroutineScope.launch(Dispatchers.Default) {
-            val res: Either<Failure, Type>
-            res = try {
-                run(params)
-            } catch (t: Throwable) {
-                e(t)
-                Either.Left(Failure.OtherError())
-            }
+//        modelCoroutineScope.launch(Dispatchers.Default) {
+//            val res: Either<Failure, Type>
+//            res = try {
+//                run(params)
+//            } catch (t: Throwable) {
+//                e(t)
+//                Either.Left(Failure.OtherError())
+//            }
+//
+//            modelCoroutineScope.launch(Dispatchers.Main) { onResult(res) }
+//        }
 
-            modelCoroutineScope.launch(Dispatchers.Main) { onResult(res) }
+//        modelCoroutineScope.launch(Dispatchers.Default) {
+//            val res: Either<Failure, Type>
+//            res = try {
+//                run(params)
+//            } catch (t: Throwable) {
+//                e(t)
+//                Either.Left(Failure.OtherError())
+//            }
+//
+//            withContext(Dispatchers.Main) { onResult(res) }
+//        }
+
+        modelCoroutineScope.launch {
+
+            var res: Either<Failure, Type>? = null
+            withContext(Dispatchers.Default) {
+
+                res = try {
+                    run(params)
+                } catch (t: Throwable) {
+                    e(t)
+                    Either.Left(Failure.OtherError())
+                }
+            }
+            //this run on Main(UI) thread
+            onResult(res!!)
         }
 
 

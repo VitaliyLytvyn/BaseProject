@@ -1,6 +1,5 @@
 package com.skyver.trybase.domain.interactor
 
-
 import com.skyver.trybase.domain.ReposRepository
 import com.skyver.trybase.domain.entity.Repo
 import com.skyver.trybase.presentation.extention.Failure
