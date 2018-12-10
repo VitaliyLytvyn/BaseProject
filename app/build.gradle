@@ -16,6 +16,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+
     }
     buildTypes {
         release {
@@ -42,16 +44,15 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.constraintLayoutVersion
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
+    //multidex if minSdkVersion <= 20
+    implementation 'com.android.support:multidex:1.0.3'
+
     // Navigation
     implementation 'android.arch.navigation:navigation-fragment-ktx:' + rootProject.navigationVersion
     implementation 'android.arch.navigation:navigation-ui-ktx:' + rootProject.navigationVersion
 
     //Timber logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    
-    // Crashlytics  dependency
-    implementation 'com.google.firebase:firebase-core:16.0.6'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.7'
 
     //dagger
     implementation 'com.google.dagger:dagger:2.19'
@@ -72,6 +73,21 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
+    // Crashlytics  dependency
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.7'
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
+    // Required only if Facebook login support is required
+    // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
+    //implementation 'com.facebook.android:facebook-android-sdk:4.+'
+    implementation 'com.facebook.android:facebook-login:[4,5)'
+
+
+    // Required only if Twitter login support is required
+    // Find the latest Twitter SDK releases here: https://goo.gl/E5wZvQ
+    //implementation 'com.twitter.sdk.android:twitter-core:3.+'
 
 
 

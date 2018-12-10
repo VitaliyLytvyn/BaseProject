@@ -3,6 +3,7 @@ package com.skyver.trybase
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDexApplication
 import com.skyver.trybase.di.ApplicationComponent
 import com.skyver.trybase.di.ApplicationModule
 import com.skyver.trybase.di.DaggerApplicationComponent
@@ -10,7 +11,8 @@ import com.skyver.trybase.presentation.platform.CrashReportingTree
 import timber.log.Timber
 
 
-class AppClass : Application() {
+//class AppClass : Application() {
+class AppClass : MultiDexApplication() {
 
     val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
         DaggerApplicationComponent

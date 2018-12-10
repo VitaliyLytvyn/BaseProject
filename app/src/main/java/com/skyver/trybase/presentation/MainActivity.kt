@@ -1,5 +1,6 @@
 package com.skyver.trybase.presentation
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             // Start application
             setComponents()
         } else {
-            e("SplashFragment GoogleApiAvailability NOT AVAILABLE")
+            e("MainActivity GoogleApiAvailability = NOT AVAILABLE")
         }
     }
 
@@ -127,6 +128,26 @@ class MainActivity : AppCompatActivity() {
 
         return findNavController(R.id.my_nav_host_fragment).navigateUp(drawerLayout)
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (requestCode == RC_SIGN_IN) {
+//            val response = IdpResponse.fromResultIntent(data)
+//
+//            if (resultCode == Activity.RESULT_OK) {
+//                // Successfully signed in
+//                val user = FirebaseAuth.getInstance().currentUser
+//                // ...
+//            } else {
+//                // Sign in failed. If response is null the user canceled the
+//                // sign-in flow using the back button. Otherwise check
+//                // response.getError().getErrorCode() and handle the error.
+//                // ...
+//            }
+//        }
+//
+//    }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If

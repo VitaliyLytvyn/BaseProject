@@ -6,10 +6,9 @@ buildscript {
     ext.navigationVersion = "1.0.0-alpha07"
     repositories {
         google()
-        jcenter()
         // Crashlytics repository
         maven { url 'https://maven.fabric.io/public' }
-
+        jcenter()
     }
 
     dependencies {
@@ -28,10 +27,9 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
         // Crashlytics repository
         maven { url 'https://maven.google.com/' }
-
+        jcenter()
     }
 }
 
