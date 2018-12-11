@@ -30,10 +30,11 @@ class AuthFragment : BaseFragment() {
         // Choose authentication providers
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            //AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.TwitterBuilder().build(),
             AuthUI.IdpConfig.FacebookBuilder().build()
         )
-        //AuthUI.IdpConfig.TwitterBuilder().build())
+
 
         // Create and launch sign-in intent
         startActivityForResult(
@@ -54,6 +55,9 @@ class AuthFragment : BaseFragment() {
 
                 // Successfully signed in
                 val user = FirebaseAuth.getInstance().currentUser
+                e("Successfully signed in user: ${user?.displayName}")
+                e("Successfully signed in providerId: ${user?.providerId}")
+                e("Successfully signed in email: ${user?.email}")
 
                 findNavController().navigate(R.id.home_dest, null,
                         NavOptions.Builder()
@@ -70,15 +74,7 @@ class AuthFragment : BaseFragment() {
         super.onDestroyView()
 
         //todo delete => for testing
-//        activity?.let {
-//            AuthUI.getInstance()
-//                .signOut(it)
-//                .addOnCompleteListener {
-//                    // ...
-//
-//                }
-//        }
-
+        //authenticator.logOutUser()
     }
 
     companion object {
