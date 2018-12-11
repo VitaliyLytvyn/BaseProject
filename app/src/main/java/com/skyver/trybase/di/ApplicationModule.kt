@@ -3,7 +3,7 @@ package com.skyver.trybase.di
 import android.content.Context
 import com.skyver.trybase.AppClass
 import com.skyver.trybase.BuildConfig
-import com.skyver.trybase.data.AuthenticatiorFirebaseImpl
+import com.skyver.trybase.data.AuthenticatorFirebaseImpl
 import com.skyver.trybase.data.NetworkRepository
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.domain.ReposRepository
@@ -40,5 +40,5 @@ class ApplicationModule(private val application: AppClass) {
 
     @Provides @Singleton fun provideRepoesRepository(dataSource: NetworkRepository): ReposRepository = dataSource
 
-    @Provides @Singleton fun provideAuthenticator(authenticator: AuthenticatiorFirebaseImpl): Authenticator = authenticator
+    @Provides @Singleton fun provideAuthenticator(authenticator: AuthenticatorFirebaseImpl): Authenticator = authenticator
 }

@@ -1,12 +1,11 @@
 package com.skyver.trybase.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.crashlytics.android.Crashlytics
 import com.skyver.trybase.R
 import com.skyver.trybase.presentation.platform.BaseFragment
 import timber.log.Timber.d
@@ -21,10 +20,8 @@ class HomeFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        //check if user logged in if not go for authentication
-        if (!authenticator.isLogedIn()){
-            findNavController().navigate(R.id.authFragment, null, null)
-        }
+        startAuthenticationIfNeeded()
+        //authenticator.logOutUser()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -73,6 +70,16 @@ class HomeFragment : BaseFragment() {
             findNavController().navigate(action)
         }
 
+    }
+
+    private fun startAuthenticationIfNeeded(){
+        //check if user logged in if not go for authentication
+        if (!authenticator.isLogedIn()) {
+            findNavController().navigate(R.id.authFragment, null,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.home_dest, true).build())//prevents return here on back button press
+
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

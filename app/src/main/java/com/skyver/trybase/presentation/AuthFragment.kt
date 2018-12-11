@@ -6,8 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.skyver.trybase.R
 import com.skyver.trybase.presentation.platform.BaseFragment
@@ -18,11 +19,13 @@ class AuthFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
+
+        startAuthProcess()
+
         return inflater.inflate(R.layout.splash_layout, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun startAuthProcess() {
 
         // Choose authentication providers
         val providers = arrayListOf(
@@ -40,26 +43,24 @@ class AuthFragment : BaseFragment() {
                 .build(),
             RC_SIGN_IN
         )
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN) {
-            val response = IdpResponse.fromResultIntent(data)
 
             if (resultCode == Activity.RESULT_OK) {
+
                 // Successfully signed in
                 val user = FirebaseAuth.getInstance().currentUser
-                e("Successfully signed in user: ${user?.displayName}")
-                // ...
+
+                findNavController().navigate(R.id.home_dest, null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.authFragment, true).build())
+
             } else {
-                e("Successfully NOT signed error: ${response?.error?.message}")
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
+                notifyWithAction(R.string.failure_unknown_error, R.string.action_try_again, ::startAuthProcess)
             }
         }
 
