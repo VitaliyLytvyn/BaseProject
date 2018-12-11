@@ -9,6 +9,7 @@ import androidx.navigation.navOptions
 import com.crashlytics.android.Crashlytics
 import com.skyver.trybase.R
 import com.skyver.trybase.presentation.platform.BaseFragment
+import timber.log.Timber.d
 import timber.log.Timber.e
 
 
@@ -16,6 +17,15 @@ import timber.log.Timber.e
  * Fragment used to show how to navigate to another destination
  */
 class HomeFragment : BaseFragment() {
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        //check if user logged in if not go for authentication
+        if (!authenticator.isLogedIn()){
+            findNavController().navigate(R.id.authFragment, null, null)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)

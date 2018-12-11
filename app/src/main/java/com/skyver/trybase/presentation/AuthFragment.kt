@@ -69,14 +69,14 @@ class AuthFragment : BaseFragment() {
         super.onDestroyView()
 
         //todo delete => for testing
-        activity?.let {
-            AuthUI.getInstance()
-                .signOut(it)
-                .addOnCompleteListener {
-                    // ...
-
-                }
-        }
+//        activity?.let {
+//            AuthUI.getInstance()
+//                .signOut(it)
+//                .addOnCompleteListener {
+//                    // ...
+//
+//                }
+//        }
 
     }
 

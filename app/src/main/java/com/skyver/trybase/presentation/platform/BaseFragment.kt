@@ -1,5 +1,6 @@
 package com.skyver.trybase.presentation.platform
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.skyver.trybase.AppClass
 import com.skyver.trybase.R
 import com.skyver.trybase.di.ApplicationComponent
+import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.presentation.MainActivity
 import timber.log.Timber.e
 import javax.inject.Inject
@@ -27,7 +29,16 @@ abstract class BaseFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var authenticator: Authenticator//todo auth
+
     open fun onBackPressed() {}
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        //Inject the fragment inside Dagger 2 dependency graph
+        appComponent.inject(this)
+    }
 
     //todo check behaviour of hiding progress when fragment is on stop - onStop callback doesn't work
     // due to interference with previous fragment's lifecycle

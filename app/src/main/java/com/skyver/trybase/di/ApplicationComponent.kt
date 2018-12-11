@@ -3,6 +3,7 @@ package com.skyver.trybase.di
 import com.skyver.trybase.AppClass
 import com.skyver.trybase.di.viewmodel.ViewModelModule
 import com.skyver.trybase.presentation.FlowStepFragment
+import com.skyver.trybase.presentation.platform.BaseFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -11,5 +12,6 @@ import javax.inject.Singleton
 interface ApplicationComponent {
     fun inject(application: AppClass)
     fun inject(flowStepFragment: FlowStepFragment)
+    fun inject(baseFragment: BaseFragment)
 
 }
