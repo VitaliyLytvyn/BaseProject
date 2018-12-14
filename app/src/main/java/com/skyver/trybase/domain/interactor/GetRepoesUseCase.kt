@@ -2,12 +2,10 @@ package com.skyver.trybase.domain.interactor
 
 import com.skyver.trybase.domain.ReposRepository
 import com.skyver.trybase.domain.entity.Repo
-import com.skyver.trybase.presentation.extention.Failure
-import java.lang.Exception
 import javax.inject.Inject
 
-class GetRepoes
-@Inject constructor(private val reposRepository: ReposRepository) : UseCase<List<Repo>, UseCase.None>() {
+class GetRepoesUseCase
+@Inject constructor(private val reposRepository: ReposRepository) : BaseUseCase<List<Repo>, BaseUseCase.None>() {
 
     override suspend fun run(params: None) = reposRepository.repoes()
 

@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.skyver.trybase.R
 import com.skyver.trybase.presentation.platform.BaseFragment
@@ -35,7 +37,6 @@ class AuthFragment : BaseFragment() {
             AuthUI.IdpConfig.FacebookBuilder().build()
         )
 
-
         // Create and launch sign-in intent
         startActivityForResult(
             AuthUI.getInstance()
@@ -59,9 +60,11 @@ class AuthFragment : BaseFragment() {
                 e("Successfully signed in providerId: ${user?.providerId}")
                 e("Successfully signed in email: ${user?.email}")
 
-                findNavController().navigate(R.id.home_dest, null,
-                        NavOptions.Builder()
-                            .setPopUpTo(R.id.authFragment, true).build())
+                findNavController().navigate(
+                    R.id.home_dest, null,
+                    NavOptions.Builder()
+                        .setPopUpTo(R.id.authFragment, true).build()
+                )
 
             } else {
                 notifyWithAction(R.string.failure_unknown_error, R.string.action_try_again, ::startAuthProcess)

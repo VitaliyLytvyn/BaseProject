@@ -1,6 +1,7 @@
 package com.skyver.trybase.presentation.extention
 
 import android.content.Context
+import android.content.res.Resources
 
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -22,3 +23,11 @@ inline fun <reified T : ViewModel> Fragment.viewModel(factory: ViewModelProvider
 val BaseFragment.viewContainer: View get() = (activity as MainActivity).my_nav_host_fragment.view!!
 
 val BaseFragment.appContext: Context get() = activity?.applicationContext!!
+
+fun BaseFragment.fromResource(res: Int): String {
+    return try {
+        activity?.applicationContext?.getString(res) ?: ""
+    } catch (e: Resources.NotFoundException) {
+        ""
+    }
+}

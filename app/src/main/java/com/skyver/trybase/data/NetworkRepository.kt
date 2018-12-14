@@ -45,4 +45,5 @@ class NetworkRepository
             Either.Left(Failure.ServerError(exception.localizedMessage))
         }
     }
+
 }

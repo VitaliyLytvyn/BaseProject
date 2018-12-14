@@ -10,10 +10,10 @@ import timber.log.Timber.e
  * This abstraction represents an execution unit for different use cases (this means than any use
  * case in the application should implement this contract).
  *
- * By convention each [UseCase] implementation will execute its job in a background thread
+ * By convention each [BaseUseCase] implementation will execute its job in a background thread
  * (kotlin coroutine) and will post the result in the UI thread.
  */
-abstract class UseCase<out Type, in Params> where Type : Any {
+abstract class BaseUseCase<out Type, in Params> where Type : Any {
 
     abstract suspend fun run(params: Params): Either<Failure, Type>
 
@@ -70,7 +70,7 @@ abstract class UseCase<out Type, in Params> where Type : Any {
                     run(params)
                 } catch (t: Throwable) {
                     e(t)
-                    Either.Left(Failure.OtherError())
+                    Either.Left(Failure.OtherError())//here is gonna be the most unusual error caught - no need show to user
                 }
             }
             //this run on Main(UI) thread

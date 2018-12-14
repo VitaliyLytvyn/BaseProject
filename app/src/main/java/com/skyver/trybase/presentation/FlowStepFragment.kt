@@ -7,15 +7,12 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.AuthResult
 import com.skyver.trybase.R
-import com.skyver.trybase.presentation.extention.Failure
-import com.skyver.trybase.presentation.extention.failure
-import com.skyver.trybase.presentation.extention.observe
-import com.skyver.trybase.presentation.extention.viewModel
 import com.skyver.trybase.presentation.platform.BaseFragment
 import com.skyver.trybase.presentation.entity.RepoView
+import com.skyver.trybase.presentation.extention.*
 import kotlinx.android.synthetic.main.flow_step_one_fragment.*
-import timber.log.Timber.e
 import javax.inject.Inject
 
 
@@ -33,6 +30,10 @@ class FlowStepFragment : BaseFragment() {
         repoesViewModel = viewModel(viewModelFactory) {
             observe(repoes, ::renderMoviesList)
             failure(failure, ::handleFailure)
+
+            //todo test
+            observe(loginResult, ::renderLoginList)
+
         }
     }
 
@@ -65,6 +66,7 @@ class FlowStepFragment : BaseFragment() {
         view.findViewById<View>(R.id.next_button).setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.next_action)
         )
+
     }
 
     private fun initializeView() {
@@ -75,12 +77,21 @@ class FlowStepFragment : BaseFragment() {
 
     private fun loadMoviesList() {
         showProgress()
-        repoesViewModel.loadMovies()
+        repoesViewModel.loadRepoes()
     }
 
     private fun renderMoviesList(movies: List<RepoView>?) {
         repoesAdapter.collection = movies.orEmpty()
         hideProgress()
+
+        //todo test
+        repoesViewModel.craeteUser("me2BOOLEAN@hg.com", "free123445")
+    }
+
+    ////todo test
+    private fun renderLoginList(authResult: Boolean?) {
+        notify("LOGED IN!! $authResult")
+
     }
 
     private fun handleFailure(failure: Failure?) {
@@ -88,15 +99,23 @@ class FlowStepFragment : BaseFragment() {
 
         when (failure) {
             is Failure.NetworkConnection -> renderFailure(R.string.failure_network_connection)
-            is Failure.ServerError -> { renderFailure(failure.cause )}
-            is Failure.OtherError -> { renderFailure(R.string.failure_unknown_error )}
+            is Failure.ServerError -> {
+                renderFailure(failure.cause ?: fromResource(R.string.failure_unknown_error))
+            }
+
+            is Failure.OtherError -> {
+                renderFailure(failure.cause ?: fromResource(R.string.failure_unknown_error))
+            }
         }
     }
 
     private fun renderFailure(@StringRes message: Int) {
         notifyWithAction(message, R.string.action_refresh, ::loadMoviesList)
     }
-    private fun renderFailure( message: String) {
+
+    private fun renderFailure(message: String) {
         notifyWithAction(message, R.string.action_refresh, ::loadMoviesList)
     }
 }
+
+
