@@ -1,6 +1,7 @@
 package com.skyver.trybase.presentation
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -19,6 +20,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import timber.log.Timber.d
 import com.skyver.trybase.R
 import timber.log.Timber
@@ -71,6 +73,31 @@ class MainActivity : AppCompatActivity() {
             //Toast.makeText(this@MainActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
             d("Navigated to $dest")
         }
+
+        listenForDeepLink()
+    }
+
+    private fun listenForDeepLink() {
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+
+                    e("listenForDeepLink() addOnSuccessListener!! deepLink: $deepLink")
+                    val param = deepLink.getQueryParameter("ff")
+                    e("listenForDeepLink() addOnSuccessListener!! GET PARAMETER param: $param")
+                    // For example, open the linked
+                    // content, or apply promotional credit to the user's
+                    // account.
+                }
+
+                e("listenForDeepLink() addOnSuccessListener!!!!!!!!! listenForDeepLink: $deepLink")
+
+            }
+            .addOnFailureListener(this) { e -> e( "getDynamicLink:onFailure $e") }
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
