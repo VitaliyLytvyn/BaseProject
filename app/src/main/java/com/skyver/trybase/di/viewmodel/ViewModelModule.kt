@@ -2,6 +2,7 @@ package com.skyver.trybase.di.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.skyver.trybase.presentation.AuthViewModel
 import com.skyver.trybase.presentation.RepoesViewModel
 import dagger.Binds
 import dagger.Module
@@ -16,9 +17,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RepoesViewModel::class)
     abstract fun bindsRepoesViewModel(repoesViewModel: RepoesViewModel): ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(MovieDetailsViewModel::class)
-//    abstract fun bindsDetailsViewModel(detailsViewModel: DetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AuthViewModel::class)
+    abstract fun bindsAuthViewModel(authViewModel: AuthViewModel): ViewModel
 }

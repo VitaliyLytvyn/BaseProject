@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -47,6 +48,27 @@ class AuthenticatorFirebaseImpl
                 //jj.user.id
                 try {
                     val authResult = auth.createUserWithEmailAndPassword(email, password).asDeferred().await()
+                    Either.Right(true)
+                } catch (t: Throwable) {
+                    e(t)
+                    Either.Left(Failure.ServerError(t.message))
+                }
+
+
+            }
+
+            false, null -> Either.Left(Failure.NetworkConnection())
+        }
+    }
+
+    override suspend fun signInUserSocial(credential: AuthCredential): Either<Failure, Boolean> {
+        return when (networkHandler.isConnected) {
+            //true -> request(service.repoes(), { it.map { it.toRepo() } }, emptyList())
+            true -> {
+                var jj: AuthResult
+                //jj.user.id
+                try {
+                    val authResult = auth.signInWithCredential(credential).asDeferred().await()
                     Either.Right(true)
                 } catch (t: Throwable) {
                     e(t)

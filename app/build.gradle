@@ -83,6 +83,7 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.6'
+    //Firebase UI Auth
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -94,6 +95,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:17.1.4'
     //firebase dynamic links
     implementation 'com.google.firebase:firebase-dynamic-links:16.1.5'
+
+    //Firebase NOT UI Auth
+    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

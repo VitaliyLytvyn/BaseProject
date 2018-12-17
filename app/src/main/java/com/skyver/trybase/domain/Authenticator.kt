@@ -1,6 +1,7 @@
 package com.skyver.trybase.domain
 
 import androidx.lifecycle.LiveData
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.skyver.trybase.domain.entity.UserAuthent
 import com.skyver.trybase.domain.interactor.Either
@@ -17,6 +18,8 @@ interface Authenticator{
     suspend fun signInEmailPassword(email: String, password: String): Either<Failure, Boolean>
 
     suspend fun createUserEmailPassword(email: String, password: String): Either<Failure, Boolean>
+
+    suspend fun signInUserSocial(credential: AuthCredential): Either<Failure, Boolean>
 
 //    suspend fun signInEmailPassword(email: String, password: String): Either<Failure, AuthResult>
 //
