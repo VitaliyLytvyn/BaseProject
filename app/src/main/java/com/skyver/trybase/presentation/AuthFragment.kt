@@ -57,8 +57,9 @@ class AuthFragment : BaseFragment() {
 
     private fun renderLoginSuccess(authResult: Boolean?) {
         hideProgress()
-        if(authResult != null && authResult == true){
+        if (authResult != null && authResult == true) {
             notify(R.string.logged_in)
+
             goInAndDisableReturn()
         }
     }
@@ -119,7 +120,7 @@ class AuthFragment : BaseFragment() {
 
     //NON UI library Email/Password flow
     private fun createEmailPasswordUser(email: String, password: String) {
-        //authViewModel.craeteUser(email, password)
+        //authViewModel.craeteUser(email, password)// todo implement
         authViewModel.craeteUser("me2BOOLEAN@hg.com", "free123445")
     }
 

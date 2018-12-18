@@ -49,12 +49,10 @@ class AuthenticatorFirebaseImpl
                 try {
                     val authResult = auth.createUserWithEmailAndPassword(email, password).asDeferred().await()
                     Either.Right(true)
-                } catch (t: Throwable) {
+                } catch (t: Exception) {
                     e(t)
                     Either.Left(Failure.ServerError(t.message))
                 }
-
-
             }
 
             false, null -> Either.Left(Failure.NetworkConnection())
@@ -70,12 +68,10 @@ class AuthenticatorFirebaseImpl
                 try {
                     val authResult = auth.signInWithCredential(credential).asDeferred().await()
                     Either.Right(true)
-                } catch (t: Throwable) {
+                } catch (t: Exception) {
                     e(t)
                     Either.Left(Failure.ServerError(t.message))
                 }
-
-
             }
 
             false, null -> Either.Left(Failure.NetworkConnection())
@@ -91,12 +87,10 @@ class AuthenticatorFirebaseImpl
                 try {
                     val authResult = auth.signInWithEmailAndPassword(email, password).asDeferred().await()
                     Either.Right(true)
-                } catch (t: Throwable) {
+                } catch (t: Exception) {
                     e(t)
                     Either.Left(Failure.ServerError(t.message))
                 }
-
-
             }
 
             false, null -> Either.Left(Failure.NetworkConnection())

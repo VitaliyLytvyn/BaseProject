@@ -21,7 +21,8 @@ class HomeFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         startAuthenticationIfNeeded()
-        //authenticator.logOutUser() //todo test delete
+
+        //authenticator.logOutUser()// todo delete stay for testing
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

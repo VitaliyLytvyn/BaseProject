@@ -6,6 +6,7 @@ import com.skyver.trybase.domain.interactor.Either
 import com.skyver.trybase.presentation.extention.Failure
 import com.skyver.trybase.presentation.platform.NetworkHandler
 import retrofit2.Call
+import timber.log.Timber.e
 import javax.inject.Inject
 
 class NetworkRepository
@@ -20,7 +21,7 @@ class NetworkRepository
             false, null -> Either.Left(Failure.NetworkConnection())
         }
     }
-//
+
 //        override fun repoDetails(movieId: Int): Either<Failure, RepoDetails> {
 //            return when (networkHandler.isConnected) {
 //                true -> request(service.repoDetails(movieId), { it.toRepoDetails() }, RepoeDetailsEntity.empty())
@@ -42,7 +43,8 @@ class NetworkRepository
                 )
             }
         } catch (exception: Throwable) {
-            Either.Left(Failure.ServerError(exception.localizedMessage))
+            e(exception)
+            Either.Left(Failure.ServerError())
         }
     }
 
