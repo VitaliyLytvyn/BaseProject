@@ -1,28 +1,31 @@
 <resources>
+
     <string name="app_name">TryMakeBaseProject</string>
 
 
-    <!--fb login  todo change-->
-    <!--<string name="facebook_app_id">1472429296226258</string>-->
-    <!--<string name="fb_login_protocol_scheme">fb1472429296226258</string>-->
+    <!--fb sign in NON UI-AUTH todo consider choose either firebase-auth or firebase-ui-auth only-->
+    <!--<string name="facebook_app_id" translatable="false">1472429296226258</string>-->
+    <!--<string name="fb_login_protocol_scheme" translatable="false">fb1472429296226258</string>-->
 
-    <!--fb login FIREBASE UI!! todo change-->
+    <!--Google sign in NON UI-AUTH todo consider choose either firebase-auth or firebase-ui-auth only-->
+    <string name="default_web_client_id_2" translatable="false">943599322346-nbn0q7gbv4uj56e7tc1om28dct5b9pgr.apps.googleusercontent.com</string>
+
+    <!--fb login FIREBASE UI-AUTH!! todo consider choose either firebase-auth or firebase-ui-auth only-->
     <string name="facebook_application_id" translatable="false">1472429296226258</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1472429296226258</string>
 
-    <!--twitter login FIREBASE UI!! todo change-->
+    <!--twitter login FIREBASE UI-AUTH!! todo consider choose either firebase-auth or firebase-ui-auth only-->
     <string name="twitter_consumer_key" translatable="false">76gGo4kbzx6A6ZY2iVLW3jPiW</string>
     <string name="twitter_consumer_secret" translatable="false">bgRQEtxDrkeqVeKqkM4pTCXFwKM5fFoyUKfM2GnQ1A700nlAd5</string>
 
 
     <string name="home">Home</string>
-    <string name="login">Login</string>
     <string name="fragment2">fragment2</string>
     <string name="shopping_cart">shopping_cart</string>
 
-    <!--todo delete-->
-    <string name="my">my notify!!!!____)))))))))</string>
-
+    <!--Auyth fragment-->
+    <string name="login">Login</string>
+    <string name="logged_in">Successfully logged in</string>
 
     <!--Errors-->
     <string name="failure_network_connection">failure_network_connection</string>

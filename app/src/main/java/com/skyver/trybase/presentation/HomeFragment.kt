@@ -21,7 +21,7 @@ class HomeFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         startAuthenticationIfNeeded()
-        //authenticator.logOutUser()
+        //authenticator.logOutUser() //todo test delete
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,13 +72,14 @@ class HomeFragment : BaseFragment() {
 
     }
 
-    private fun startAuthenticationIfNeeded(){
+    private fun startAuthenticationIfNeeded() {
         //check if user logged in if not go for authentication
         if (!authenticator.isLogedIn()) {
-            findNavController().navigate(R.id.authFragment, null,
+            findNavController().navigate(
+                R.id.authFragment, null,
                 NavOptions.Builder()
-                    .setPopUpTo(R.id.home_dest, true).build())//prevents return here on back button press
-
+                    .setPopUpTo(R.id.home_dest, true).build() //prevents return here on back button press
+            )
         }
     }
 

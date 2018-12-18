@@ -14,18 +14,10 @@ import javax.inject.Inject
 
 class RepoesViewModel
 @Inject constructor(
-    private val getRepoesUseCase: GetRepoesUseCase,
-    private val createUserEmailPasswordUC: CreateUserEmailPasswordUC,
-    private val authenticator: Authenticator
+    private val getRepoesUseCase: GetRepoesUseCase
 ) : BaseViewModel() {
 
-    var loginResult: MutableLiveData<Boolean> = MutableLiveData()
     var repoes: MutableLiveData<List<RepoView>> = MutableLiveData()
-    var userLiveData: MutableLiveData<User> = MutableLiveData()
-
-    init {
-        authenticator.observeUser().observeForever { userLiveData.value = it.toUser() }
-    }
 
     fun loadRepoes() = getRepoesUseCase(uiScope, BaseUseCase.None()) { it.either(::handleFailure, ::handlerepoList) }
 
@@ -33,10 +25,4 @@ class RepoesViewModel
         this.repoes.value = repoes.map { RepoView(it.id, it.name, it.fullName, it.url) }
     }
 
-    fun craeteUser(email: String, pass: String) =
-        createUserEmailPasswordUC(uiScope, Pair(email, pass)) { it.either(::handleFailure, ::handleCreateUser) }
-
-    private fun handleCreateUser(authResult: Boolean) {
-        this.loginResult.value = authResult
-    }
 }

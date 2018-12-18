@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
@@ -15,13 +14,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.skyver.trybase.R
-import com.skyver.trybase.presentation.entity.RepoView
 import com.skyver.trybase.presentation.extention.*
 import com.skyver.trybase.presentation.platform.BaseFragment
 import timber.log.Timber.e
+import com.google.android.gms.common.SignInButton
+import com.skyver.trybase.presentation.entity.User
+import kotlinx.android.synthetic.main.auth_fragment_layout.*
+import timber.log.Timber.d
+
 
 class AuthFragment : BaseFragment() {
 
@@ -33,53 +35,48 @@ class AuthFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
 
+        setUpVieModel()
+    }
+
+    private fun setUpVieModel() {
         authViewModel = viewModel(viewModelFactory) {
-            observe(loginResult, ::renderResult)
+            observe(userLiveData, ::renderUserChange)
+            observe(loginResult, ::renderLoginSuccess)
             failure(failure, ::handleFailure)
         }
     }
 
-    private fun renderResult(success: Boolean?) {
+    private fun renderUserChange(user: User?) {
+        val url = user?.photoUrl
+        if (url != null) imageViewAvatar.loadFromUrl(url.toString())
+        else imageViewAvatar.setImageResource(R.drawable.ic_android)
 
-        hideProgress()
-        e("SUCCESS END!!! login with GOOGLE!!!!!!!!!!!!!!!!")
-
-        //todo test
+        textViewName.text = user?.name ?: ""
+        textViewEmail.text = user?.email ?: ""
     }
 
-    //todo
-    private fun handleFailure(failure: Failure?) {
+    private fun renderLoginSuccess(authResult: Boolean?) {
         hideProgress()
-
-        when (failure) {
-            is Failure.NetworkConnection -> renderFailure(fromResource(R.string.failure_network_connection))
-            is Failure.ServerError -> {
-                renderFailure(failure.cause ?: fromResource(R.string.failure_unknown_error))
-            }
-
-            is Failure.OtherError -> {
-                renderFailure(failure.cause ?: fromResource(R.string.failure_unknown_error))
-            }
+        if(authResult != null && authResult == true){
+            notify(R.string.logged_in)
+            goInAndDisableReturn()
         }
     }
-    private fun renderFailure(message: String) {
-        notifyWithAction(message, R.string.action_refresh, ::load)
-    }
-    fun load()={} //todo
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-
-        googleSignInNonUI()
-        //startAuthProcess()
-
-        return inflater.inflate(R.layout.splash_layout, container, false)
+        return inflater.inflate(R.layout.auth_fragment_layout, container, false)
     }
 
-    //UI library
-    private fun startAuthProcess() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        setUpGoogleSignInNonUI()
+        //startAuthUiProcess()
+    }
+
+    //UI library todo consider choose either firebase-auth or firebase-ui-auth only
+    private fun startAuthUiProcess() {
         // Choose authentication providers
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
@@ -90,29 +87,27 @@ class AuthFragment : BaseFragment() {
 
         // Create and launch sign-in intent
         startActivityForResult(
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .build(),
-            RC_SIGN_IN
+            AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(),
+            RC_UI_LIBRARY_SIGN_IN
         )
     }
 
     //NON UI library
-    private fun googleSignInNonUI() {
+    private fun setUpGoogleSignInNonUI() {
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            //.requestIdToken(getString(R.string.default_web_client_id))
-            .requestIdToken("943599322346-nbn0q7gbv4uj56e7tc1om28dct5b9pgr.apps.googleusercontent.com")
+            .requestIdToken(getString(R.string.default_web_client_id_2))
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(activity!!, gso)
 
+        // Set the dimensions of the sign-in button.
+        //val signInButton = findViewById(R.id.sign_in_button)
+        google_sign_in_button?.setSize(SignInButton.SIZE_STANDARD)
+        google_sign_in_button?.setOnClickListener { signInGoogle() }
 
-        signInGoogle()
     }
-
 
     private fun signInGoogle() {
         googleSignInClient?.let {
@@ -122,66 +117,88 @@ class AuthFragment : BaseFragment() {
 
     }
 
+    //NON UI library Email/Password flow
+    private fun createEmailPasswordUser(email: String, password: String) {
+        //authViewModel.craeteUser(email, password)
+        authViewModel.craeteUser("me2BOOLEAN@hg.com", "free123445")
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RC_SIGN_IN) {
-
+        if (requestCode == RC_UI_LIBRARY_SIGN_IN) {
             if (resultCode == Activity.RESULT_OK) {
 
-                // Successfully signed in
-                val user = FirebaseAuth.getInstance().currentUser
-                e("Successfully signed in user: ${user?.displayName}")
-                e("Successfully signed in providerId: ${user?.providerId}")
-                e("Successfully signed in email: ${user?.email}")
-
-                findNavController().navigate(
-                    R.id.home_dest, null,
-                    NavOptions.Builder()
-                        .setPopUpTo(R.id.authFragment, true).build()
-                )
+                // Successfully signed in and authenticated with UI library
+                goInAndDisableReturn()
 
             } else {
-                notifyWithAction(R.string.failure_unknown_error, R.string.action_try_again, ::startAuthProcess)
+                notifyWithAction(R.string.failure_unknown_error, R.string.action_try_again, ::startAuthUiProcess)
             }
         }
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_GOOGLE_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)
-                e("Google sign in SUCCESS!! email: ${account?.email}")
-                //firebaseAuthWithGoogle(account!!)
+            if (resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    val account = task.getResult(ApiException::class.java)
 
-                credential = GoogleAuthProvider.getCredential(account!!.idToken, null)
+                    account ?: return
 
+                    credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                    credential?.let {
+                        showProgress()
+                        authViewModel.signInWithSocial(it)
+                    }
 
-                //todo
-                showProgress()
-                authViewModel.signInWithSocial(credential!!)//todo null!!
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                e("Google sign in failed: ${e.message}")
-                // ...
+                } catch (exc: ApiException) {
+                    // Google Sign In failed, update UI appropriately
+                    e(exc)
+                    notify(exc.localizedMessage)
+                }
             }
+
         }
 
+    }
 
+    private fun handleFailure(failure: Failure?) {
+        hideProgress()
+        when (failure) {
+            is Failure.NetworkConnection -> renderFailure(fromResource(R.string.failure_network_connection))
+            is Failure.ServerError -> {
+                renderFailure(failure.cause ?: fromResource(R.string.failure_unknown_error))
+            }
+            is Failure.OtherError -> {
+                renderFailure(failure.cause ?: fromResource(R.string.failure_unknown_error))
+            }
+        }
+    }
+
+    private fun renderFailure(message: String) {
+        notify(message)
+    }
+
+    private fun goInAndDisableReturn() {
+        findNavController().navigate(
+            R.id.home_dest, null,
+            NavOptions.Builder()
+                .setPopUpTo(R.id.authFragment, true).build() //prevents return here on back button press
+        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
         //todo delete => for testing
-        //authenticator.logOutUser()
+        authenticator.logOutUser()
     }
 
     companion object {
-        const val RC_SIGN_IN = 47942
+        const val RC_UI_LIBRARY_SIGN_IN = 47942
         const val RC_GOOGLE_SIGN_IN = 47943
     }
-
 
 }

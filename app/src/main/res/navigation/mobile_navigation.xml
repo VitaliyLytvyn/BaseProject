@@ -9,7 +9,7 @@
             android:id="@+id/authFragment"
             android:name="com.skyver.trybase.presentation.AuthFragment"
             android:label="@string/login"
-            tools:layout="@layout/splash_layout">
+            tools:layout="@layout/auth_fragment_layout">
         <action
                 android:id="@+id/action_splashFragment_to_homeFragment"
                 app:destination="@+id/home_dest"

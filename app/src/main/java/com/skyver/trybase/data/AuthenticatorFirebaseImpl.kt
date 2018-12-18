@@ -30,11 +30,11 @@ class AuthenticatorFirebaseImpl
     // Initialize Firebase Auth
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private var currentUserLD: MutableLiveData<UserAuthent> = MutableLiveData()
-    var currentUser: LiveData<UserAuthent> = currentUserLD
+    private var _currentUserLD: MutableLiveData<UserAuthent> = MutableLiveData()
+    var currentUser: LiveData<UserAuthent> = _currentUserLD
 
     init {
-        auth.addAuthStateListener { currentUserLD.value = UserMapper.toUserAuth(auth.currentUser) }
+        auth.addAuthStateListener { _currentUserLD.value = UserMapper.toUserAuth(auth.currentUser) }
     }
 
     override fun observeUser(): LiveData<UserAuthent> = currentUser

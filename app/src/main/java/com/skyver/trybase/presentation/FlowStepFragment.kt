@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.auth.AuthResult
 import com.skyver.trybase.R
 import com.skyver.trybase.presentation.platform.BaseFragment
 import com.skyver.trybase.presentation.entity.RepoView
@@ -28,12 +27,8 @@ class FlowStepFragment : BaseFragment() {
         appComponent.inject(this)
 
         repoesViewModel = viewModel(viewModelFactory) {
-            observe(repoes, ::renderMoviesList)
+            observe(repoes, ::renderReposList)
             failure(failure, ::handleFailure)
-
-            //todo test
-            observe(loginResult, ::renderLoginList)
-
         }
     }
 
@@ -61,7 +56,7 @@ class FlowStepFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initializeView()
-        loadMoviesList()
+        loadReposList()
 
         view.findViewById<View>(R.id.next_button).setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.next_action)
@@ -75,24 +70,18 @@ class FlowStepFragment : BaseFragment() {
         repoesAdapter.clickListener = { movie -> notify(movie.name) }
     }
 
-    private fun loadMoviesList() {
+    private fun loadReposList() {
         showProgress()
         repoesViewModel.loadRepoes()
     }
 
-    private fun renderMoviesList(movies: List<RepoView>?) {
+    private fun renderReposList(movies: List<RepoView>?) {
         repoesAdapter.collection = movies.orEmpty()
         hideProgress()
 
-        //todo test
-        repoesViewModel.craeteUser("me2BOOLEAN@hg.com", "free123445")
     }
 
-    ////todo test
-    private fun renderLoginList(authResult: Boolean?) {
-        notify("LOGED IN!! $authResult")
 
-    }
 
     private fun handleFailure(failure: Failure?) {
         hideProgress()
@@ -110,11 +99,11 @@ class FlowStepFragment : BaseFragment() {
     }
 
     private fun renderFailure(@StringRes message: Int) {
-        notifyWithAction(message, R.string.action_refresh, ::loadMoviesList)
+        notifyWithAction(message, R.string.action_refresh, ::loadReposList)
     }
 
     private fun renderFailure(message: String) {
-        notifyWithAction(message, R.string.action_refresh, ::loadMoviesList)
+        notifyWithAction(message, R.string.action_refresh, ::loadReposList)
     }
 }
 

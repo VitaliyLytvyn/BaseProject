@@ -33,7 +33,7 @@
 
         </activity>
 
-        <!--fb part start NOT needed if FIREBASE UI!!-->
+        <!--fb part start NOT needed if FIREBASE UI!! todo consider choose either firebase-auth or firebase-ui-auth only-->
         <!--<meta-data android:name="com.facebook.sdk.ApplicationId"-->
         <!--android:value="@string/facebook_app_id"/>-->
 
