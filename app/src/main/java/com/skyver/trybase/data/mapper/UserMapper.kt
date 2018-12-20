@@ -14,7 +14,7 @@ class UserMapper {
                     email = u.email,
                     name = u.displayName,
                     phoneNumber = u.phoneNumber,
-                    photoUrl = u.photoUrl
+                    photoUrl = u.photoUrl.toString()
                 )
             }
     }

@@ -20,9 +20,8 @@ import com.skyver.trybase.presentation.extention.*
 import com.skyver.trybase.presentation.platform.BaseFragment
 import timber.log.Timber.e
 import com.google.android.gms.common.SignInButton
-import com.skyver.trybase.presentation.entity.User
+import com.skyver.trybase.presentation.entity.UserEntity
 import kotlinx.android.synthetic.main.auth_fragment_layout.*
-import timber.log.Timber.d
 
 
 class AuthFragment : BaseFragment() {
@@ -43,24 +42,38 @@ class AuthFragment : BaseFragment() {
             observe(userLiveData, ::renderUserChange)
             observe(loginResult, ::renderLoginSuccess)
             failure(failure, ::handleFailure)
+
+
+            observe(saveResult, ::renderSaveSuccess)//todo
         }
     }
 
-    private fun renderUserChange(user: User?) {
+    private fun renderSaveSuccess(result: Boolean?) {
+        hideProgress()
+        if (result != null && result == true) {
+            notify(R.string.logged_in)
+        }
+
+        goInAndDisableReturn()
+    }
+
+    private fun renderUserChange(user: UserEntity?) {
         val url = user?.photoUrl
         if (url != null) imageViewAvatar.loadFromUrl(url.toString())
         else imageViewAvatar.setImageResource(R.drawable.ic_android)
 
         textViewName.text = user?.name ?: ""
         textViewEmail.text = user?.email ?: ""
+
+
+        //todo
+        user?.let { authViewModel.saveUser(it) }
     }
 
     private fun renderLoginSuccess(authResult: Boolean?) {
         hideProgress()
         if (authResult != null && authResult == true) {
             notify(R.string.logged_in)
-
-            goInAndDisableReturn()
         }
     }
 
@@ -71,6 +84,7 @@ class AuthFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         setUpGoogleSignInNonUI()
         //startAuthUiProcess()
@@ -106,7 +120,11 @@ class AuthFragment : BaseFragment() {
         // Set the dimensions of the sign-in button.
         //val signInButton = findViewById(R.id.sign_in_button)
         google_sign_in_button?.setSize(SignInButton.SIZE_STANDARD)
-        google_sign_in_button?.setOnClickListener { signInGoogle() }
+        google_sign_in_button?.setOnClickListener {
+
+            signInGoogle()
+            //createEmailPasswordUser("", "")//todo delete / change
+        }
 
     }
 
@@ -118,10 +136,10 @@ class AuthFragment : BaseFragment() {
 
     }
 
-    //NON UI library Email/Password flow
+    //NON UI library Email/Password flow todo implement
     private fun createEmailPasswordUser(email: String, password: String) {
-        //authViewModel.craeteUser(email, password)// todo implement
-        authViewModel.craeteUser("me2BOOLEAN@hg.com", "free123445")
+        //authViewModel.createUser(email, password)
+        authViewModel.createUser("meTEST@hg.com", "free123445")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

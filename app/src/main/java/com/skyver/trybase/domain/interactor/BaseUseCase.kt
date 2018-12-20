@@ -62,21 +62,19 @@ abstract class BaseUseCase<out Type, in Params> where Type : Any {
 //        }
 
         modelCoroutineScope.launch {
-
             var res: Either<Failure, Type>? = null
             withContext(Dispatchers.Default) {
-
                 res = try {
                     run(params)
                 } catch (t: Throwable) {
-                    e(t)
+                    e(t)//log error
                     Either.Left(Failure.OtherError())//here is gonna be the most unusual error caught - no need show to user
                 }
             }
+
             //this run on Main(UI) thread
             onResult(res!!)
         }
-
 
     }
 

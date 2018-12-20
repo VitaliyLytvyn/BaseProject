@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.AuthCredential
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.domain.interactor.CreateUserEmailPasswordUC
+import com.skyver.trybase.domain.interactor.SaveUserUC
 import com.skyver.trybase.domain.interactor.SignInSocialUC
-import com.skyver.trybase.presentation.entity.User
+import com.skyver.trybase.presentation.entity.UserEntity
 import com.skyver.trybase.presentation.platform.BaseViewModel
 import javax.inject.Inject
 
@@ -14,16 +15,21 @@ class AuthViewModel
 @Inject constructor(
     private val signInSocialUC: SignInSocialUC,
     private val createUserEmailPasswordUC: CreateUserEmailPasswordUC,
-    private val authenticator: Authenticator
+    private val authenticator: Authenticator,
+    private  val saveUserUC: SaveUserUC
     ) : BaseViewModel() {
 
-    var loginResult: MutableLiveData<Boolean> = MutableLiveData()
+    private var _loginResult: MutableLiveData<Boolean> = MutableLiveData()
+    var loginResult: LiveData<Boolean> = _loginResult
 
-    private var _userLiveData: MutableLiveData<User> = MutableLiveData()
-    var userLiveData: LiveData<User> = _userLiveData
+    private var _saveResult: MutableLiveData<Boolean> = MutableLiveData()
+    var saveResult: LiveData<Boolean> = _saveResult
+
+    private var _userLiveData: MutableLiveData<UserEntity> = MutableLiveData()
+    var userLiveData: LiveData<UserEntity> = _userLiveData
 
     init {
-        authenticator.observeUser().observeForever { _userLiveData.value = it?.toUser() }
+        authenticator.observeUser().observeForever { _userLiveData.value = it?.toUserEntity() }
     }
 
     fun signInWithSocial(credential: AuthCredential){
@@ -31,11 +37,16 @@ class AuthViewModel
     }
 
     private fun handleCreateUser(authResult: Boolean) {
-        this.loginResult.value = authResult
+        this._loginResult.value = authResult
     }
 
 
-    fun craeteUser(email: String, pass: String) =
+    fun createUser(email: String, pass: String) =
         createUserEmailPasswordUC(uiScope, Pair(email, pass)) { it.either(::handleFailure, ::handleCreateUser) }
 
+    fun saveUser(user: UserEntity) = saveUserUC(uiScope , user) { it.either(::handleFailure, ::handleSave) }
+
+    private fun handleSave(b: Boolean) {
+        this._saveResult.value = b
+    }
 }

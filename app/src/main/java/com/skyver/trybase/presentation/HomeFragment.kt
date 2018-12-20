@@ -20,9 +20,9 @@ class HomeFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        startAuthenticationIfNeeded()
+        authenticator.logOutUser()// todo delete stay for testing
 
-        //authenticator.logOutUser()// todo delete stay for testing
+        startAuthenticationIfNeeded()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,7 +67,7 @@ class HomeFragment : BaseFragment() {
             //)
 
             val action = HomeFragmentDirections.nextAction()
-            action.setFlowStepNumber(1)
+            action.flowStepNumber = 1
             findNavController().navigate(action)
         }
 

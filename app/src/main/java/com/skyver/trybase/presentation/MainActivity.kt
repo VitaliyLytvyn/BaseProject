@@ -62,7 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavMenu(navController)
 
-        navController.addOnNavigatedListener { _, destination ->
+//        navController.addOnNavigatedListener { _, destination ->
+        navController.addOnDestinationChangedListener   { _, destination, _ ->
             val dest: String = try {
                 resources.getResourceName(destination.id)
             } catch (e: Throwable) {

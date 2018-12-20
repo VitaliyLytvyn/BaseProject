@@ -39,12 +39,15 @@ class FlowStepFragment : BaseFragment() {
     ): View? {
         setHasOptionsMenu(true)
 
-        //val flowStepNumber = arguments?.getInt("flowStepNumber")
+        //val flowStepNumber = arguments?.getInt("flowStepNumber")//alternative variant
 
         // TODO Use type-safe arguments - remove previous line!
-        val safeArgs = FlowStepFragmentArgs.fromBundle(arguments)
-        val flowStepNumber = safeArgs.flowStepNumber
-
+//        val safeArgs = FlowStepFragmentArgs.fromBundle(arguments)//older version - current arguments not null
+//        val flowStepNumber = safeArgs.flowStepNumber
+        val safeArgs =
+            if (arguments != null) FlowStepFragmentArgs.fromBundle(arguments!!)
+            else null
+        val flowStepNumber = safeArgs?.flowStepNumber
 
         return when (flowStepNumber) {
             2 -> inflater.inflate(R.layout.flow_step_two_fragment, container, false)
@@ -80,7 +83,6 @@ class FlowStepFragment : BaseFragment() {
         hideProgress()
 
     }
-
 
 
     private fun handleFailure(failure: Failure?) {

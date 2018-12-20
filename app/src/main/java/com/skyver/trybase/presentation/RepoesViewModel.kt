@@ -1,15 +1,11 @@
 package com.skyver.trybase.presentation
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.AuthResult
-import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.domain.entity.Repo
 import com.skyver.trybase.domain.interactor.GetRepoesUseCase
 import com.skyver.trybase.domain.interactor.BaseUseCase
-import com.skyver.trybase.domain.interactor.CreateUserEmailPasswordUC
 import com.skyver.trybase.presentation.platform.BaseViewModel
 import com.skyver.trybase.presentation.entity.RepoView
-import com.skyver.trybase.presentation.entity.User
 import javax.inject.Inject
 
 class RepoesViewModel
