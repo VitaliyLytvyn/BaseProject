@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.skyver.trybase.presentation.AuthViewModel
 import com.skyver.trybase.presentation.RepoesViewModel
+import com.skyver.trybase.presentation.SharedViewMode
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,4 +23,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AuthViewModel::class)
     abstract fun bindsAuthViewModel(authViewModel: AuthViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SharedViewMode::class)
+    abstract fun bindsShareViewModel(sharedViewModel: SharedViewMode): ViewModel
 }

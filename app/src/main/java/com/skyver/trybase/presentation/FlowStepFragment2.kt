@@ -15,16 +15,12 @@ import kotlinx.android.synthetic.main.flow_step_one_fragment.*
 import javax.inject.Inject
 
 
-class FlowStepFragment : BaseFragment() {
+class FlowStepFragment2 : BaseFragment() {
 
     @Inject
     lateinit var repoesAdapter: RepoesAdapter
 
     private lateinit var repoesViewModel: RepoesViewModel
-
-    //todo share feature
-    private  var modelShare: SharedViewMode? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,16 +30,6 @@ class FlowStepFragment : BaseFragment() {
             observe(repoes, ::renderReposList)
             failure(failure, ::handleFailure)
         }
-
-        //todo share feature
-        modelShare = sharedViewModel(viewModelFactory){
-            observe(shared, ::updateUI)
-        }
-
-    }
-
-    private fun updateUI(str: String?){
-        text.text = str ?: ""
     }
 
     override fun onCreateView(
@@ -63,11 +49,8 @@ class FlowStepFragment : BaseFragment() {
             else null
         val flowStepNumber = safeArgs?.flowStepNumber
 
-//        return when (flowStepNumber) {
-//            2 -> inflater.inflate(R.layout.flow_step_two_fragment, container, false)
-//            else -> inflater.inflate(R.layout.flow_step_one_fragment, container, false)
-//        }
-        return  inflater.inflate(R.layout.flow_step_one_fragment, container, false)
+        return inflater.inflate(R.layout.flow_step_two_fragment, container, false)
+
 
     }
 
@@ -100,6 +83,7 @@ class FlowStepFragment : BaseFragment() {
 
     }
 
+
     private fun handleFailure(failure: Failure?) {
         hideProgress()
 
@@ -123,5 +107,3 @@ class FlowStepFragment : BaseFragment() {
         notifyWithAction(message, R.string.action_refresh, ::loadReposList)
     }
 }
-
-

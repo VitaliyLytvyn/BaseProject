@@ -212,7 +212,7 @@ class AuthFragment : BaseFragment() {
         super.onDestroyView()
 
         //todo delete => for testing
-        authenticator.logOutUser()
+        //authenticator.logOutUser()
     }
 
     companion object {

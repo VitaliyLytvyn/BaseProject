@@ -19,6 +19,13 @@ inline fun <reified T : ViewModel> Fragment.viewModel(factory: ViewModelProvider
     return vm
 }
 
+inline fun <reified T : ViewModel> Fragment.sharedViewModel(factory: ViewModelProvider.Factory, body: T.() -> Unit): T? {
+    activity ?: return null
+    val vm = ViewModelProviders.of(this.activity!!, factory)[T::class.java]
+    vm.body()
+    return vm
+}
+
 
 val BaseFragment.viewContainer: View get() = (activity as MainActivity).my_nav_host_fragment.view!!
 

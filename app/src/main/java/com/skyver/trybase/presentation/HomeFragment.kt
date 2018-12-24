@@ -7,9 +7,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.skyver.trybase.R
+import com.skyver.trybase.presentation.extention.sharedViewModel
 import com.skyver.trybase.presentation.platform.BaseFragment
-import timber.log.Timber.d
-import timber.log.Timber.e
 
 
 /**
@@ -17,10 +16,19 @@ import timber.log.Timber.e
  */
 class HomeFragment : BaseFragment() {
 
+    //todo share feature
+    private var modelShare: SharedViewMode? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //todo  share feature
+        modelShare = sharedViewModel(viewModelFactory) {}
+    }
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        authenticator.logOutUser()// todo delete stay for testing
 
         startAuthenticationIfNeeded()
     }
@@ -44,6 +52,8 @@ class HomeFragment : BaseFragment() {
         }
         view.findViewById<Button>(R.id.navigate_destination_button)?.setOnClickListener {
 
+            //todo share feature
+            modelShare?.share("shared")
 
             //showProgress()
             //notify(R.string.my)
