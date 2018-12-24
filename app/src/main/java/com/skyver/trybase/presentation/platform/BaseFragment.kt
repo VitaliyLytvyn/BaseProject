@@ -1,9 +1,9 @@
 package com.skyver.trybase.presentation.platform
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -12,7 +12,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.skyver.trybase.presentation.extention.appContext
 import kotlinx.android.synthetic.main.content.*
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
 import com.skyver.trybase.AppClass
@@ -20,6 +19,7 @@ import com.skyver.trybase.R
 import com.skyver.trybase.di.ApplicationComponent
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.presentation.MainActivity
+import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber.d
@@ -39,8 +39,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     @Inject
     lateinit var authenticator: Authenticator//todo auth
 
-    open fun onBackPressed() {}
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         //Inject the fragment inside Dagger 2 dependency graph
@@ -54,8 +52,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         e("$this onCreate() -> hideProgress")
         hideProgress()
     }
-
-    internal fun firstTimeCreated(savedInstanceState: Bundle?) = savedInstanceState == null
 
     internal fun showProgress() = progressStatus(View.VISIBLE)
 
@@ -119,14 +115,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    //todo for Runtime permission
+    //for Runtime permission
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    //todo for Runtime permission
+    //for Runtime permission
     override fun onPermissionsDenied(requestCode: Int, @NonNull perms: List<String>) {
         // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
         // This will display a dialog directing them to enable the permission in app settings.
@@ -135,14 +131,48 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    //todo for Runtime permission
+    //for Runtime permission
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
-    //todo for Runtime permission
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-//            //do something after return from settings
-//        }
-//    }
+
+
+    //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION
+    //todo - do or do NOT something after return from settings
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            //do something after return from settings
+//            if (hasLocationAndContactsPermissions()) {
+//                // Have permissions, do the thing!
+//            }
+        }
+    }
+
+    //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION
+    @AfterPermissionGranted(RC_LOCATION_PERM)
+    fun locationAndContactsTask() {
+        if (hasLocationAndContactsPermissions()) {
+            // Have permissions, do the thing!
+            d("have permission - > do the thing")
+        } else {
+            e("have NO permission")
+            // Ask for both permissions
+            EasyPermissions.requestPermissions(
+                this,
+                "rationale for location",
+                RC_LOCATION_PERM,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        }
+    }
+
+    //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION
+    private fun hasLocationAndContactsPermissions(): Boolean {
+        return EasyPermissions.hasPermissions(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION
+    companion object {
+        const val RC_LOCATION_PERM = 998
+    }
 
 }
