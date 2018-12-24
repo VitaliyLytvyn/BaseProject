@@ -1,7 +1,9 @@
 package com.skyver.trybase.presentation.platform
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -10,17 +12,22 @@ import com.google.android.material.snackbar.Snackbar
 import com.skyver.trybase.presentation.extention.appContext
 import kotlinx.android.synthetic.main.content.*
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
 import com.skyver.trybase.AppClass
 import com.skyver.trybase.R
 import com.skyver.trybase.di.ApplicationComponent
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.presentation.MainActivity
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber.d
 import timber.log.Timber.e
 import javax.inject.Inject
 
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
         (activity?.application as AppClass).appComponent
@@ -99,7 +106,7 @@ abstract class BaseFragment : Fragment() {
         notifyWithAction(s, actionText, action)
     }
 
-   internal fun notifyWithAction( message: String, @StringRes actionText: Int, action: () -> Any) {
+    internal fun notifyWithAction(message: String, @StringRes actionText: Int, action: () -> Any) {
         my_nav_host_fragment?.view?.let {
             val snackBar = Snackbar.make(it, message, Snackbar.LENGTH_INDEFINITE)
             snackBar.setAction(actionText) { _ -> action.invoke() }
@@ -111,4 +118,31 @@ abstract class BaseFragment : Fragment() {
             snackBar.show()
         }
     }
+
+    //todo for Runtime permission
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    //todo for Runtime permission
+    override fun onPermissionsDenied(requestCode: Int, @NonNull perms: List<String>) {
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(this).build().show()
+        }
+    }
+
+    //todo for Runtime permission
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
+    //todo for Runtime permission
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+//            //do something after return from settings
+//        }
+//    }
+
 }

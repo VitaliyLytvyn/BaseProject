@@ -1,12 +1,12 @@
 package com.skyver.trybase.presentation
 
-import android.content.Intent
+
+import android.content.res.Resources
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -25,6 +25,9 @@ import timber.log.Timber.d
 import com.skyver.trybase.R
 import timber.log.Timber
 import timber.log.Timber.e
+import pub.devrel.easypermissions.EasyPermissions
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -62,16 +65,13 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavMenu(navController)
 
-//        navController.addOnNavigatedListener { _, destination ->
-        navController.addOnDestinationChangedListener   { _, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             val dest: String = try {
                 resources.getResourceName(destination.id)
-            } catch (e: Throwable) {
-                //} catch (e: Resources.NotFoundException) {
+            } catch (e: Resources.NotFoundException) {
                 Integer.toString(destination.id)
             }
 
-            //Toast.makeText(this@MainActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
             d("Navigated to $dest")
         }
 
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                 e("listenForDeepLink() addOnSuccessListener!!!!!!!!! listenForDeepLink: $deepLink")
 
             }
-            .addOnFailureListener(this) { e -> e( "getDynamicLink:onFailure $e") }
+            .addOnFailureListener(this) { e -> e("getDynamicLink:onFailure $e") }
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
@@ -157,26 +157,6 @@ class MainActivity : AppCompatActivity() {
         return findNavController(R.id.my_nav_host_fragment).navigateUp(drawerLayout)
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (requestCode == RC_UI_LIBRARY_SIGN_IN) {
-//            val response = IdpResponse.fromResultIntent(data)
-//
-//            if (resultCode == Activity.RESULT_OK) {
-//                // Successfully signed in
-//                val user = FirebaseAuth.getInstance().currentUser
-//                // ...
-//            } else {
-//                // Sign in failed. If response is null the user canceled the
-//                // sign-in flow using the back button. Otherwise check
-//                // response.getError().getErrorCode() and handle the error.
-//                // ...
-//            }
-//        }
-//
-//    }
-
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
@@ -190,7 +170,6 @@ class MainActivity : AppCompatActivity() {
                 val dialog = apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                 dialog.setOnDismissListener { closeApp() }
                 dialog.show()
-
             } else {
                 Timber.i("This device is not supported.")
                 closeApp()

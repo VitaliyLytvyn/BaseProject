@@ -1,11 +1,13 @@
 package com.skyver.trybase.presentation
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
@@ -22,6 +24,10 @@ import timber.log.Timber.e
 import com.google.android.gms.common.SignInButton
 import com.skyver.trybase.presentation.entity.UserEntity
 import kotlinx.android.synthetic.main.auth_fragment_layout.*
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber.d
 
 
 class AuthFragment : BaseFragment() {
@@ -122,8 +128,8 @@ class AuthFragment : BaseFragment() {
         google_sign_in_button?.setSize(SignInButton.SIZE_STANDARD)
         google_sign_in_button?.setOnClickListener {
 
-            signInGoogle()
-            //createEmailPasswordUser("", "")//todo delete / change
+            //signInGoogle()
+            locationAndContactsTask()//todo delete / change
         }
 
     }
@@ -157,7 +163,7 @@ class AuthFragment : BaseFragment() {
         }
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_GOOGLE_SIGN_IN) {
+        else if (requestCode == RC_GOOGLE_SIGN_IN) {
             if (resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
@@ -179,6 +185,16 @@ class AuthFragment : BaseFragment() {
                 }
             }
 
+        }
+
+        //todo for Runtime permission - do or do NOT something after return from settings
+        else if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            e("after settings OK -> locationAndContactsTask()")
+            if (hasLocationAndContactsPermissions()) {
+                // Have permissions, do the thing!
+                e("have permission")
+                Toast.makeText(activity, "TODO: Location and Contacts things", Toast.LENGTH_LONG).show()
+            }
         }
 
     }
@@ -218,6 +234,31 @@ class AuthFragment : BaseFragment() {
     companion object {
         const val RC_UI_LIBRARY_SIGN_IN = 47942
         const val RC_GOOGLE_SIGN_IN = 47943
+
+        const val RC_LOCATION_PERM = 449
+    }
+
+    //todo for Runtime permission
+    @AfterPermissionGranted(RC_LOCATION_PERM)
+    fun locationAndContactsTask() {
+        if (hasLocationAndContactsPermissions()) {
+            // Have permissions, do the thing!
+            d("have permission")
+        } else {
+            e("have NO permission")
+            // Ask for both permissions
+            EasyPermissions.requestPermissions(
+                this,
+                "rationale for location",
+                RC_LOCATION_PERM,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        }
+    }
+
+    //todo for Runtime permission
+    private fun hasLocationAndContactsPermissions(): Boolean {
+        return EasyPermissions.hasPermissions(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
 }

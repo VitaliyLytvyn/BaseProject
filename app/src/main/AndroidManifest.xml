@@ -3,6 +3,8 @@
           xmlns:tools="http://schemas.android.com/tools" package="com.skyver.trybase">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--todo - this one needed only for testing runtime permissions work properly-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
             android:name=".AppClass"
