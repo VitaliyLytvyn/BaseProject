@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.skyver.trybase.R
 import com.skyver.trybase.presentation.platform.BaseFragment
 import com.skyver.trybase.presentation.entity.RepoView
+import com.skyver.trybase.presentation.entity.UserEntity
 import com.skyver.trybase.presentation.extention.*
 import kotlinx.android.synthetic.main.flow_step_one_fragment.*
+import timber.log.Timber.d
+import timber.log.Timber.e
 import javax.inject.Inject
 
 
@@ -32,6 +35,7 @@ class FlowStepFragment : BaseFragment() {
 
         repoesViewModel = viewModel(viewModelFactory) {
             observe(repoes, ::renderReposList)
+            observe(allUsers, ::renderAllUsersList)
             failure(failure, ::handleFailure)
         }
 
@@ -77,16 +81,25 @@ class FlowStepFragment : BaseFragment() {
         initializeView()
         loadReposList()
 
+
         view.findViewById<View>(R.id.next_button).setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.next_action)
         )
 
+        view.findViewById<View>(R.id.button2).setOnClickListener{
+            loadUsersList()
+        }
     }
 
     private fun initializeView() {
         repoList.layoutManager = LinearLayoutManager(activity)
         repoList.adapter = repoesAdapter
         repoesAdapter.clickListener = { movie -> notify(movie.name) }
+    }
+
+    private fun loadUsersList() {
+        showProgress()
+        repoesViewModel.loadAllUsers()
     }
 
     private fun loadReposList() {
@@ -97,7 +110,15 @@ class FlowStepFragment : BaseFragment() {
     private fun renderReposList(movies: List<RepoView>?) {
         repoesAdapter.collection = movies.orEmpty()
         hideProgress()
+    }
 
+    private fun renderAllUsersList(list: List<UserEntity>?) {
+        list?.let {
+            var r = ""
+            it.map{user ->  r += user.email +"\n"}
+            d("AllUsers: $r")
+        }
+        hideProgress()
     }
 
     private fun handleFailure(failure: Failure?) {

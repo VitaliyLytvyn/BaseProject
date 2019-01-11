@@ -1,6 +1,7 @@
 package com.skyver.trybase.data
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.skyver.trybase.domain.interactor.Either
 import com.skyver.trybase.presentation.extention.Failure
 import kotlinx.coroutines.CompletableDeferred
@@ -29,11 +30,36 @@ fun <T, R> request(call: Call<T>, transform: (T) -> R, default: T): Either<Failu
     }
 }
 
-suspend fun <T, R> taskToFirebase(task: Task<T>, transform: (T) -> R, default: R): Either<Failure, R> {
+suspend fun <T, R> taskToFirebaseSet(task: Task<T>, transform: (T) -> R, default: R): Either<Failure, R> {
+    return try {
+        val result = task.asDeferred().await()
+
+        if (result != null) Either.Right(transform(result))//todo check for refactor
+        else Either.Right(default)
+    } catch (exception: Exception) {
+        e(exception)//log exception
+        Either.Left(Failure.ServerError(exception.message))
+    }
+}
+
+//todo test this
+suspend fun <T, R> taskToFirebaseGet(task: Task<T>, transform: (T) -> R): Either<Failure, R> {
     return try {
         task.asDeferred().await()
-        if (task.result != null) Either.Right(transform(task.result!!))
-        else Either.Right(default)
+
+        var result = task.result
+
+        //result of Task in Firebase can be both DocumentSnapshot and QuerySnapshot
+        //for DocumentSnapshot(ONLY) absence can be as null or !res.exists() so need to check:
+        if (result is DocumentSnapshot && !result.exists()) {
+            result = null
+        }
+
+        if (result == null)
+            Either.Left(Failure.NoSuchDocument())
+        else
+            Either.Right(transform(result))
+
     } catch (exception: Exception) {
         e(exception)//log exception
         Either.Left(Failure.ServerError(exception.message))

@@ -30,6 +30,9 @@ class HomeFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        //todo delete => for testing
+        authenticator.logOutUser()
+
         startAuthenticationIfNeeded()
     }
 

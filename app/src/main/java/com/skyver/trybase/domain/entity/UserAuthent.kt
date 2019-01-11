@@ -5,11 +5,11 @@ import com.google.firebase.firestore.Exclude
 import com.skyver.trybase.presentation.entity.UserEntity
 
 data class UserAuthent(
-    val uid: String,
-    val email: String?,
-    val name: String?,
-    val phoneNumber: String?,
-    val photoUrl: String?
+    val uid: String = "",
+    val email: String? = null,
+    val name: String? = null,
+    val phoneNumber: String? = null,
+    val photoUrl: String? = null
 ){
     @Exclude
     fun toUserEntity() = UserEntity(uid, email, name, phoneNumber, photoUrl)

@@ -38,7 +38,7 @@ class AuthenticatorFirebaseImpl
     override suspend fun createUserEmailPassword(email: String, password: String): Either<Failure, Boolean> {
         return when (networkHandler.isConnected) {
             true -> {
-                taskToFirebase(auth.createUserWithEmailAndPassword(email, password), { true }, false)
+                taskToFirebaseSet(auth.createUserWithEmailAndPassword(email, password), { true }, false)
             }
 
             false, null -> Either.Left(Failure.NetworkConnection())
@@ -47,9 +47,7 @@ class AuthenticatorFirebaseImpl
 
     override suspend fun signInUserSocial(credential: AuthCredential): Either<Failure, Boolean> {
         return when (networkHandler.isConnected) {
-            true -> {
-                taskToFirebase(auth.signInWithCredential(credential), { true }, false)
-            }
+            true -> taskToFirebaseSet(auth.signInWithCredential(credential), { true }, false)
 
             false, null -> Either.Left(Failure.NetworkConnection())
         }
@@ -58,7 +56,7 @@ class AuthenticatorFirebaseImpl
     override suspend fun signInEmailPassword(email: String, password: String): Either<Failure, Boolean> {
         return when (networkHandler.isConnected) {
             true -> {
-                taskToFirebase(auth.signInWithEmailAndPassword(email, password), { true }, false)
+                taskToFirebaseSet(auth.signInWithEmailAndPassword(email, password), { true }, false)
             }
 
             false, null -> Either.Left(Failure.NetworkConnection())
