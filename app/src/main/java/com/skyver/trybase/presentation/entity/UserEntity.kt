@@ -1,6 +1,5 @@
 package com.skyver.trybase.presentation.entity
 
-import android.net.Uri
 
 data class UserEntity(
     var uid: String,

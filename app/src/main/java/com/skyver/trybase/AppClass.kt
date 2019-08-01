@@ -1,9 +1,12 @@
 package com.skyver.trybase
 
 
-import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.google.android.gms.security.ProviderInstaller
 import com.skyver.trybase.di.ApplicationComponent
 import com.skyver.trybase.di.ApplicationModule
 import com.skyver.trybase.di.DaggerApplicationComponent
@@ -24,6 +27,18 @@ class AppClass : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         initTimber()
+
+        ////absolutely needed for API versions < 21
+        if (GoogleApiAvailability.getInstance() != null) {
+            try {
+                ProviderInstaller.installIfNeeded(this)
+            } catch (e: GooglePlayServicesRepairableException) {
+                e.printStackTrace()
+            } catch (e: GooglePlayServicesNotAvailableException) {
+                e.printStackTrace()
+            }
+        }
+
         injectMembers()
 
         //for not crash using vector drawables

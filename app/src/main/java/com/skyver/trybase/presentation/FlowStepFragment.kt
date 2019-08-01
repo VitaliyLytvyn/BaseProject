@@ -8,13 +8,12 @@ import androidx.annotation.StringRes
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.skyver.trybase.R
-import com.skyver.trybase.presentation.platform.BaseFragment
 import com.skyver.trybase.presentation.entity.RepoView
 import com.skyver.trybase.presentation.entity.UserEntity
 import com.skyver.trybase.presentation.extention.*
+import com.skyver.trybase.presentation.platform.BaseFragment
 import kotlinx.android.synthetic.main.flow_step_one_fragment.*
 import timber.log.Timber.d
-import timber.log.Timber.e
 import javax.inject.Inject
 
 

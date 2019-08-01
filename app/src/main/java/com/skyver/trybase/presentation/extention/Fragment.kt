@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.skyver.trybase.presentation.platform.BaseFragment
 import com.skyver.trybase.presentation.MainActivity
-import kotlinx.android.synthetic.main.content.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 inline fun <reified T : ViewModel> Fragment.viewModel(factory: ViewModelProvider.Factory, body: T.() -> Unit): T {

@@ -3,10 +3,10 @@ package com.skyver.trybase.presentation
 
 import android.content.res.Resources
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -21,13 +21,10 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import timber.log.Timber.d
 import com.skyver.trybase.R
 import timber.log.Timber
+import timber.log.Timber.d
 import timber.log.Timber.e
-import pub.devrel.easypermissions.EasyPermissions
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -91,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                     val param = deepLink.getQueryParameter("ff")
                     e("listenForDeepLink() addOnSuccessListener!! GET PARAMETER param: $param")
                     // For example, open the linked
-                    // content, or apply promotional credit to the user's
+                    // activity_main_content, or apply promotional credit to the user's
                     // account.
                 }
 

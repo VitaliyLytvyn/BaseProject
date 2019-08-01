@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.skyver.trybase.presentation.extention.appContext
-import kotlinx.android.synthetic.main.content.*
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +18,7 @@ import com.skyver.trybase.R
 import com.skyver.trybase.di.ApplicationComponent
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.presentation.MainActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -39,7 +39,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     @Inject
     lateinit var authenticator: Authenticator//todo auth
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         //Inject the fragment inside Dagger 2 dependency graph
         appComponent.inject(this)
@@ -53,12 +53,38 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         hideProgress()
     }
 
+    override fun onStart() {
+        super.onStart()
+        e("onStart $this")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        e("onPause $this")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        e("onStop $this")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        e("onDestroyView $this")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        e("onDestroy $this")
+    }
+
     internal fun showProgress() = progressStatus(View.VISIBLE)
 
     internal fun hideProgress() = progressStatus(View.GONE)
 
     private fun progressStatus(viewStatus: Int) {
         if (activity == null || activity !is MainActivity) return //safety check
+
         with(activity as MainActivity) {
             this.progressBarContainer?.let {
                 if (it.visibility == viewStatus) return@with // prevents unneeded manipulations
