@@ -6,29 +6,35 @@ import com.skyver.trybase.domain.interactor.Either
 import com.skyver.trybase.presentation.extention.Failure
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
-import timber.log.Timber
 import timber.log.Timber.e
 
-
-fun <T, R> request(call: Call<T>, transform: (T) -> R, default: T): Either<Failure, R> {
+suspend fun <T, R> request(call: suspend () -> T, transform: (T) -> R, default: T): Either<Failure, R> {
     return try {
-        val response = call.execute()
-        when (response.isSuccessful) {
-            true -> {
-                Either.Right(transform((response.body() ?: default)))
-            }
-            false -> Either.Left(
-                Failure.ServerError(
-                    response.message()
-                )
-            )
-        }
+        Either.Right(transform((call() ?: default)))
     } catch (exception: Throwable) {
-        Timber.e(exception)
+        e(exception)
         Either.Left(Failure.ServerError())
     }
 }
+
+//fun <T, R> request(call: Call<T>, transform: (T) -> R, default: T): Either<Failure, R> {
+//    return try {
+//        val response = call.execute()
+//        when (response.isSuccessful) {
+//            true -> {
+//                Either.Right(transform((response.body() ?: default)))
+//            }
+//            false -> Either.Left(
+//                Failure.ServerError(
+//                    response.message()
+//                )
+//            )
+//        }
+//    } catch (exception: Throwable) {
+//        e(exception)
+//        Either.Left(Failure.ServerError())
+//    }
+//}
 
 suspend fun <T, R> taskToFirebaseSet(task: Task<T>, transform: (T) -> R, default: R): Either<Failure, R> {
     return try {

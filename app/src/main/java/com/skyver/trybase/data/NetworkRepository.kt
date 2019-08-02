@@ -92,9 +92,9 @@ class NetworkRepository
         }
     }
 
-    override fun repoes(): Either<Failure, List<Repo>> {
+    override suspend fun repoes(): Either<Failure, List<Repo>> {
         return when (networkHandler.isConnected) {
-            true -> request(service.repoes(), { it.map { it1 -> it1.toRepo() } }, emptyList())
+            true -> request({ service.repoes()}, { it.map { it1 -> it1.toRepo() } }, emptyList())
 
             false, null -> Either.Left(Failure.NetworkConnection())
         }

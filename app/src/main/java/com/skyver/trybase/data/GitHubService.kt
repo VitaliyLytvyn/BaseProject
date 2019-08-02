@@ -10,6 +10,6 @@ class GitHubService
 @Inject constructor(retrofit: Retrofit) : GitApi {
     private val gitApi by lazy { retrofit.create(GitApi::class.java) }
 
-    override fun repoes() = gitApi.repoes()
+    override suspend fun repoes() = gitApi.repoes()
     //override fun repoeDetails(repoId: Int) = gitApi.repoDetails(repoId)
 }
