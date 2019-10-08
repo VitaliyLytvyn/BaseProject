@@ -1,19 +1,24 @@
 package com.skyver.trybase.data
 
+import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.skyver.trybase.data.FileDownLoader.Companion.FILE_PATH
 import com.skyver.trybase.domain.ReposRepository
 import com.skyver.trybase.domain.entity.Repo
 import com.skyver.trybase.domain.entity.UserAuthent
 import com.skyver.trybase.domain.interactor.Either
 import com.skyver.trybase.presentation.extention.Failure
 import com.skyver.trybase.presentation.platform.NetworkHandler
+import timber.log.Timber.e
 import javax.inject.Inject
 
 class NetworkRepository
 @Inject constructor(
     private val networkHandler: NetworkHandler,
-    private val service: GitHubService
+    private val service: GitHubService,
+    private val fileLoader: FileDownLoaderImpl
+    //private val fileLoader: FileDownLoaderImplLD
 ) : ReposRepository {
 
     // Access a Cloud Firestore instance from your Activity
@@ -95,6 +100,20 @@ class NetworkRepository
     override suspend fun repoes(): Either<Failure, List<Repo>> {
         return when (networkHandler.isConnected) {
             true -> request({ service.repoes()}, { it.map { it1 -> it1.toRepo() } }, emptyList())
+
+            false, null -> Either.Left(Failure.NetworkConnection())
+        }
+    }
+
+
+    override suspend fun downloadFile(pathFrom: String): Either<Failure, LiveData<String>> {
+        return when (networkHandler.isConnected) {
+            true -> {
+
+                //fileLoader.downloadFrom(pathFrom, FILE_PATH)
+                //Either.Right(fileLoader).also{e("NetworkRepo downloadFile ${it}")}
+                Either.Right(fileLoader.downloadFrom(pathFrom, FILE_PATH))
+            }
 
             false, null -> Either.Left(Failure.NetworkConnection())
         }

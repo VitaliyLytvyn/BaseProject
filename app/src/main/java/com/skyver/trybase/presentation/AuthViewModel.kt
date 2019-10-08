@@ -2,6 +2,7 @@ package com.skyver.trybase.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.AuthCredential
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.domain.interactor.CreateUserEmailPasswordUC
@@ -33,7 +34,7 @@ class AuthViewModel
     }
 
     fun signInWithSocial(credential: AuthCredential){
-        signInSocialUC(uiScope, credential){it.either(::handleFailure, ::handleCreateUser) }
+        signInSocialUC(viewModelScope, credential){it.either(::handleFailure, ::handleCreateUser) }
     }
 
     private fun handleCreateUser(authResult: Boolean) {
@@ -42,9 +43,9 @@ class AuthViewModel
 
 
     fun createUser(email: String, pass: String) =
-        createUserEmailPasswordUC(uiScope, Pair(email, pass)) { it.either(::handleFailure, ::handleCreateUser) }
+        createUserEmailPasswordUC(viewModelScope, Pair(email, pass)) { it.either(::handleFailure, ::handleCreateUser) }
 
-    fun saveUser(user: UserEntity) = saveUserUC(uiScope , user) { it.either(::handleFailure, ::handleSave) }
+    fun saveUser(user: UserEntity) = saveUserUC(viewModelScope , user) { it.either(::handleFailure, ::handleSave) }
 
     private fun handleSave(b: Boolean) {
         this._saveResult.value = b

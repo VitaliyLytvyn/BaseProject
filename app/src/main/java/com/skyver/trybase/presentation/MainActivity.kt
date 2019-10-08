@@ -22,12 +22,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.skyver.trybase.R
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import timber.log.Timber.d
 import timber.log.Timber.e
+import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HasAndroidInjector {
+    override fun androidInjector(): AndroidInjector<Any> {
+        return dispatchingAndroidInjector
+    }
+
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     private var drawerLayout: DrawerLayout? = null
 
@@ -85,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                     deepLink = pendingDynamicLinkData.link
 
                     e("listenForDeepLink() addOnSuccessListener!! deepLink: $deepLink")
-                    val param = deepLink.getQueryParameter("ff")
+                    val param = deepLink?.getQueryParameter("ff")
                     e("listenForDeepLink() addOnSuccessListener!! GET PARAMETER param: $param")
                     // For example, open the linked
                     // activity_main_content, or apply promotional credit to the user's

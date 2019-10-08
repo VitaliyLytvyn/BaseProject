@@ -1,13 +1,12 @@
 package com.skyver.trybase.presentation
 
-import android.Manifest
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
@@ -22,11 +21,12 @@ import com.skyver.trybase.presentation.extention.*
 import com.skyver.trybase.presentation.platform.BaseFragment
 import timber.log.Timber.e
 import com.google.android.gms.common.SignInButton
+import com.skyver.trybase.di.Injectable
 import com.skyver.trybase.presentation.entity.UserEntity
 import kotlinx.android.synthetic.main.auth_fragment_layout.*
 
 
-class AuthFragment : BaseFragment() {
+class AuthFragment : BaseFragment(), Injectable {
 
     private lateinit var authViewModel: AuthViewModel
     private var googleSignInClient: GoogleSignInClient? = null
@@ -34,7 +34,6 @@ class AuthFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appComponent.inject(this)
 
         setUpVieModel()
     }
@@ -173,7 +172,8 @@ class AuthFragment : BaseFragment() {
                         authViewModel.signInWithSocial(it)
                     }
 
-                } catch (exc: ApiException) {
+                //} catch (exc: ApiException) {
+                } catch (exc: Throwable) {
                     // Google Sign In failed, update UI appropriately
                     e(exc)
                     notify(exc.localizedMessage)

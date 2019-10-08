@@ -14,6 +14,7 @@ import com.skyver.trybase.presentation.extention.*
 import com.skyver.trybase.presentation.platform.BaseFragment
 import kotlinx.android.synthetic.main.flow_step_one_fragment.*
 import timber.log.Timber.d
+import timber.log.Timber.e
 import javax.inject.Inject
 
 
@@ -25,16 +26,16 @@ class FlowStepFragment : BaseFragment() {
     private lateinit var repoesViewModel: RepoesViewModel
 
     //todo share feature
-    private  var modelShare: SharedViewMode? = null
+    private  var modelShare: SharedViewModel? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appComponent.inject(this)
 
         repoesViewModel = viewModel(viewModelFactory) {
             observe(repoes, ::renderReposList)
             observe(allUsers, ::renderAllUsersList)
+            observe(fileLoaded, ::fileWasLoaded)
             failure(failure, ::handleFailure)
         }
 
@@ -61,10 +62,13 @@ class FlowStepFragment : BaseFragment() {
         // TODO Use type-safe arguments - remove previous line!
 //        val safeArgs = FlowStepFragmentArgs.fromBundle(arguments)//older version - current arguments not null
 //        val flowStepNumber = safeArgs.flowStepNumber
+
+
         val safeArgs =
             if (arguments != null) FlowStepFragmentArgs.fromBundle(arguments!!)
             else null
         val flowStepNumber = safeArgs?.flowStepNumber
+
 
 //        return when (flowStepNumber) {
 //            2 -> inflater.inflate(R.layout.flow_step_two_fragment, container, false)
@@ -87,6 +91,7 @@ class FlowStepFragment : BaseFragment() {
 
         view.findViewById<View>(R.id.button2).setOnClickListener{
             loadUsersList()
+            downLoadTestLargeFileWithDownloadManager()
         }
     }
 
@@ -94,6 +99,10 @@ class FlowStepFragment : BaseFragment() {
         repoList.layoutManager = LinearLayoutManager(activity)
         repoList.adapter = repoesAdapter
         repoesAdapter.clickListener = { movie -> notify(movie.name) }
+    }
+
+    private fun downLoadTestLargeFileWithDownloadManager() {
+        repoesViewModel.loadLargeFile()
     }
 
     private fun loadUsersList() {
@@ -118,6 +127,10 @@ class FlowStepFragment : BaseFragment() {
             d("AllUsers: $r")
         }
         hideProgress()
+    }
+
+    private fun fileWasLoaded(file: String?) {
+        e("FILE $file WAS LOADED!")
     }
 
     private fun handleFailure(failure: Failure?) {

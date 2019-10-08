@@ -1,7 +1,7 @@
 package com.skyver.trybase.presentation.platform
 
-import android.content.Context
-import com.skyver.trybase.presentation.extention.networkInfo
+import android.app.Application
+import com.skyver.trybase.presentation.extention.isConnected
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +10,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class NetworkHandler
-@Inject constructor(private val context: Context) {
+@Inject constructor(private val context: Application) {
     val isConnected: Boolean?
-        get() { return context.networkInfo?.isConnected }
+        get() { return context.isConnected() }
 }

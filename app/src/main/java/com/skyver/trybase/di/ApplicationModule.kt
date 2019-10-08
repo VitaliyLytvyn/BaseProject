@@ -1,7 +1,7 @@
 package com.skyver.trybase.di
 
 import android.content.Context
-import com.skyver.trybase.AppClass
+import com.skyver.trybase.App
 import com.skyver.trybase.BuildConfig
 import com.skyver.trybase.data.AuthenticatorFirebaseImpl
 import com.skyver.trybase.data.NetworkRepository
@@ -17,9 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-class ApplicationModule(private val application: AppClass) {
-
-    @Provides @Singleton fun provideApplicationContext(): Context = application
+class ApplicationModule {
 
     @Provides @Singleton fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()

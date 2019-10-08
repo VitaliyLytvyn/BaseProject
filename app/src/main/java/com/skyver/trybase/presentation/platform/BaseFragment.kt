@@ -1,6 +1,7 @@
 package com.skyver.trybase.presentation.platform
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,13 +12,15 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.skyver.trybase.presentation.extention.appContext
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.NonNull
 import androidx.lifecycle.ViewModelProvider
-import com.skyver.trybase.AppClass
 import com.skyver.trybase.R
-import com.skyver.trybase.di.ApplicationComponent
+import com.skyver.trybase.di.Injectable
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.presentation.MainActivity
+import com.skyver.trybase.presentation.extention.hasLocationPermissions
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -27,11 +30,7 @@ import timber.log.Timber.e
 import javax.inject.Inject
 
 
-abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
-
-    val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
-        (activity?.application as AppClass).appComponent
-    }
+abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks ,  Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -39,10 +38,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     @Inject
     lateinit var authenticator: Authenticator//todo auth
 
+    @Inject
+    lateinit var prefs: PreferenceHelper
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         //Inject the fragment inside Dagger 2 dependency graph
-        appComponent.inject(this)
+        // must be called before super.onCreate():
+        AndroidSupportInjection.inject(this)
     }
 
     //todo check behaviour of hiding progress when fragment is on stop - onStop callback doesn't work
@@ -65,6 +68,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     override fun onStop() {
         super.onStop()
+        hideKeyboard()
         e("onStop $this")
     }
 
@@ -85,8 +89,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun progressStatus(viewStatus: Int) {
         if (activity == null || activity !is MainActivity) return //safety check
 
-        with(activity as MainActivity) {
-            this.progressBarContainer?.let {
+        with(activity as? MainActivity) {
+            this?.progressBarContainer?.let {
                 if (it.visibility == viewStatus) return@with // prevents unneeded manipulations
 
                 it.visibility = viewStatus
@@ -99,6 +103,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             //setEnabledAll(my_nav_host_fragment.presentation!!, viewStatus != View.VISIBLE)
         }
 
+    }
+
+    //private fun hideKeyboard(context: Context?, view: View?) {
+    private fun hideKeyboard() {
+        activity ?: return
+        view ?: return
+        val imm = activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view!!.windowToken, 0)
     }
 
     //check it - alternative to setOnClickListener to disable clicks on presentation under progress bar
@@ -167,7 +179,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             //do something after return from settings
-//            if (hasLocationAndContactsPermissions()) {
+//            if (hasLocationPermissions()) {
 //                // Have permissions, do the thing!
 //            }
         }
@@ -176,7 +188,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION
     @AfterPermissionGranted(RC_LOCATION_PERM)
     fun locationAndContactsTask() {
-        if (hasLocationAndContactsPermissions()) {
+        if (hasLocationPermissions()) {
             // Have permissions, do the thing!
             d("have permission - > do the thing")
         } else {
@@ -189,11 +201,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
         }
-    }
-
-    //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION
-    private fun hasLocationAndContactsPermissions(): Boolean {
-        return EasyPermissions.hasPermissions(activity!!, Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     //todo for Runtime permission IN PARTICULAR FRAGMENT FOR PARTICULAR PERMISSION

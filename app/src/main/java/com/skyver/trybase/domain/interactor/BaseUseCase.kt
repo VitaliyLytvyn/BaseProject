@@ -78,7 +78,6 @@ abstract class BaseUseCase<out Type, in Params> where Type : Any {
 
         modelCoroutineScope.launch {
             val res: Either<Failure, Type>?
-
                 res = try {
                     run(params)
                 } catch (t: Throwable) {

@@ -24,7 +24,6 @@ class FlowStepFragment2 : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appComponent.inject(this)
 
         repoesViewModel = viewModel(viewModelFactory) {
             observe(repoes, ::renderReposList)
@@ -44,6 +43,8 @@ class FlowStepFragment2 : BaseFragment() {
         // TODO Use type-safe arguments - remove previous line!
 //        val safeArgs = FlowStepFragmentArgs.fromBundle(arguments)//older version - current arguments not null
 //        val flowStepNumber = safeArgs.flowStepNumber
+
+
         val safeArgs =
             if (arguments != null) FlowStepFragmentArgs.fromBundle(arguments!!)
             else null

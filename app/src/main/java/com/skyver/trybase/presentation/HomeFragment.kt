@@ -17,7 +17,7 @@ import com.skyver.trybase.presentation.platform.BaseFragment
 class HomeFragment : BaseFragment() {
 
     //todo share feature
-    private var modelShare: SharedViewMode? = null
+    private var modelShare: SharedViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,6 @@ class HomeFragment : BaseFragment() {
         //todo  share feature
         modelShare = sharedViewModel(viewModelFactory) {}
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -79,6 +78,7 @@ class HomeFragment : BaseFragment() {
             //Navigation.createNavigateOnClickListener(R.id.next_action, null)
             //)
 
+            //todo check!!!!!!!!
             val action = HomeFragmentDirections.nextAction()
             action.flowStepNumber = 1
             findNavController().navigate(action)

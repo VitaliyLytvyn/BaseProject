@@ -1,12 +1,14 @@
 package com.skyver.trybase.data
 
 
+import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.skyver.trybase.App
 import com.skyver.trybase.data.mapper.UserMapper
 import com.skyver.trybase.domain.Authenticator
 import com.skyver.trybase.domain.entity.UserAuthent
@@ -19,7 +21,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthenticatorFirebaseImpl
-@Inject constructor(val context: Context, private val networkHandler: NetworkHandler) : Authenticator {
+@Inject constructor(val context: Application, private val networkHandler: NetworkHandler) : Authenticator {
 
     // Initialize Firebase Auth
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
